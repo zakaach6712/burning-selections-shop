@@ -1,8 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
+  id?: string;
   image: string;
   name: string;
   price: number;
@@ -10,7 +14,20 @@ interface ProductCardProps {
   isNew?: boolean;
 }
 
-const ProductCard = ({ image, name, price, category, isNew }: ProductCardProps) => {
+const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardProps) => {
+  const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAddToCart = () => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    if (id) {
+      addToCart(id);
+    }
+  };
   return (
     <Card className="group overflow-hidden border-2 hover:border-primary transition-smooth shadow-card hover:shadow-elegant">
       <div className="relative overflow-hidden bg-muted">
@@ -45,7 +62,7 @@ const ProductCard = ({ image, name, price, category, isNew }: ProductCardProps) 
           <span className="font-display text-2xl font-bold text-primary">
             ${price}
           </span>
-          <Button size="sm" className="shadow-md">
+          <Button size="sm" className="shadow-md" onClick={handleAddToCart}>
             <ShoppingCart className="h-4 w-4 mr-2" />
             Add
           </Button>

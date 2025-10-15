@@ -4,9 +4,9 @@ import abayaImage from "@/assets/product-abaya.jpg";
 import sneakersImage from "@/assets/product-sneakers.jpg";
 import thobeImage from "@/assets/product-thobe.jpg";
 
+// These are display-only products with placeholder IDs
 const products = [
   {
-    id: 1,
     image: hoodieImage,
     name: "Urban Legend Hoodie",
     price: 89,
@@ -14,7 +14,6 @@ const products = [
     isNew: true
   },
   {
-    id: 2,
     image: abayaImage,
     name: "Elegance Abaya",
     price: 129,
@@ -22,7 +21,6 @@ const products = [
     isNew: true
   },
   {
-    id: 3,
     image: sneakersImage,
     name: "Gold Rush Sneakers",
     price: 149,
@@ -30,7 +28,6 @@ const products = [
     isNew: false
   },
   {
-    id: 4,
     image: thobeImage,
     name: "Heritage Thobe",
     price: 159,
@@ -53,8 +50,8 @@ const FeaturedProducts = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} {...product} />
+          {products.map((product, index) => (
+            <ProductCard key={index} {...product} />
           ))}
         </div>
       </div>

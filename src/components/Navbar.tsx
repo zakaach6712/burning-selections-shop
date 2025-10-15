@@ -1,8 +1,14 @@
-import { ShoppingBag, Search, Menu, User } from "lucide-react";
+import { ShoppingBag, Search, Menu, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { cartCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const categories = [
@@ -41,15 +47,30 @@ const Navbar = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
-            </Button>
+            {user ? (
+              <>
+                <Button variant="ghost" size="icon" onClick={signOut} title="Sign Out">
+                  <LogOut className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="relative" onClick={() => navigate('/cart')}>
+                  <ShoppingBag className="h-5 w-5" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="icon" onClick={() => navigate('/auth')}>
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="relative" onClick={() => navigate('/cart')}>
+                  <ShoppingBag className="h-5 w-5" />
+                </Button>
+              </>
+            )}
             <Button
               variant="ghost"
               size="icon"
