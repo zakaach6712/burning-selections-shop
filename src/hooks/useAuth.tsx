@@ -7,7 +7,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
+  isSupplier: boolean;
+  signUp: (email: string, password: string, fullName: string, role?: 'customer' | 'supplier') => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   loading: boolean;
@@ -19,6 +20,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSupplier, setIsSupplier] = useState(false);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -29,19 +31,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check admin status when user changes
+        // Check admin and supplier status when user changes
         if (session?.user) {
           setTimeout(async () => {
             const { data } = await supabase
               .from('user_roles')
               .select('role')
-              .eq('user_id', session.user.id)
-              .eq('role', 'admin')
-              .maybeSingle();
-            setIsAdmin(!!data);
+              .eq('user_id', session.user.id);
+            
+            const roles = data?.map(r => r.role) || [];
+            setIsAdmin(roles.includes('admin'));
+            setIsSupplier(roles.includes('supplier'));
           }, 0);
         } else {
           setIsAdmin(false);
+          setIsSupplier(false);
         }
         
         setLoading(false);
@@ -58,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, role: 'customer' | 'supplier' = 'customer') => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -67,6 +71,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: fullName,
+            role: role,
           },
         },
       });
@@ -127,7 +132,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, signUp, signIn, signOut, loading }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, isSupplier, signUp, signIn, signOut, loading }}>
       {children}
     </AuthContext.Provider>
   );

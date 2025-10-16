@@ -191,6 +191,7 @@ export type Database = {
           price: number
           slug: string
           stock_count: number
+          supplier_id: string | null
           tags: string[] | null
           updated_at: string | null
         }
@@ -206,6 +207,7 @@ export type Database = {
           price: number
           slug: string
           stock_count?: number
+          supplier_id?: string | null
           tags?: string[] | null
           updated_at?: string | null
         }
@@ -221,6 +223,7 @@ export type Database = {
           price?: number
           slug?: string
           stock_count?: number
+          supplier_id?: string | null
           tags?: string[] | null
           updated_at?: string | null
         }

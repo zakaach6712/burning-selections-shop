@@ -20,6 +20,7 @@ const Auth = () => {
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [signUpFullName, setSignUpFullName] = useState('');
+  const [signUpRole, setSignUpRole] = useState<'customer' | 'supplier'>('customer');
 
   useEffect(() => {
     if (user) {
@@ -37,7 +38,7 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const { error } = await signUp(signUpEmail, signUpPassword, signUpFullName);
+    const { error } = await signUp(signUpEmail, signUpPassword, signUpFullName, signUpRole);
     if (!error) {
       setSignInEmail(signUpEmail);
       setSignInPassword(signUpPassword);
@@ -117,6 +118,18 @@ const Auth = () => {
                       onChange={(e) => setSignUpFullName(e.target.value)}
                       required
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-role">I want to</Label>
+                    <select
+                      id="signup-role"
+                      value={signUpRole}
+                      onChange={(e) => setSignUpRole(e.target.value as 'customer' | 'supplier')}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="customer">Shop for products</option>
+                      <option value="supplier">Sell my products</option>
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>

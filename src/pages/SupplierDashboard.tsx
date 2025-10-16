@@ -1,0 +1,365 @@
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
+import { Plus, Package, Edit, Trash2 } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock_count: number;
+  category_id: string;
+  images: string[];
+  is_active: boolean;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+const SupplierDashboard = () => {
+  const { user, isSupplier, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    stock_count: '',
+    category_id: '',
+    image_url: '',
+  });
+
+  useEffect(() => {
+    if (!authLoading && (!user || !isSupplier)) {
+      navigate('/auth');
+    }
+  }, [user, isSupplier, authLoading, navigate]);
+
+  useEffect(() => {
+    if (user && isSupplier) {
+      fetchProducts();
+      fetchCategories();
+    }
+  }, [user, isSupplier]);
+
+  const fetchProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('supplier_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'Failed to load products',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name')
+        .order('name');
+
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error: any) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const productData = {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        stock_count: parseInt(formData.stock_count),
+        category_id: formData.category_id || null,
+        images: formData.image_url ? [formData.image_url] : [],
+        supplier_id: user?.id,
+        slug: formData.name.toLowerCase().replace(/\s+/g, '-'),
+        is_active: true,
+      };
+
+      if (editingProduct) {
+        const { error } = await supabase
+          .from('products')
+          .update(productData)
+          .eq('id', editingProduct.id);
+
+        if (error) throw error;
+
+        toast({
+          title: 'Success',
+          description: 'Product updated successfully',
+        });
+      } else {
+        const { error } = await supabase
+          .from('products')
+          .insert([productData]);
+
+        if (error) throw error;
+
+        toast({
+          title: 'Success',
+          description: 'Product added successfully',
+        });
+      }
+
+      setFormData({
+        name: '',
+        description: '',
+        price: '',
+        stock_count: '',
+        category_id: '',
+        image_url: '',
+      });
+      setEditingProduct(null);
+      setShowForm(false);
+      fetchProducts();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      description: product.description || '',
+      price: product.price.toString(),
+      stock_count: product.stock_count.toString(),
+      category_id: product.category_id || '',
+      image_url: product.images[0] || '',
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (productId: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Product deleted successfully',
+      });
+      fetchProducts();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <p>Loading...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="font-display text-4xl font-bold">Supplier Dashboard</h1>
+          <Button onClick={() => setShowForm(!showForm)}>
+            <Plus className="h-4 w-4 mr-2" />
+            {showForm ? 'Cancel' : 'Add Product'}
+          </Button>
+        </div>
+
+        {showForm && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Product Name *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={4}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="price">Price ($) *</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      step="0.01"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="stock">Stock Count *</Label>
+                    <Input
+                      id="stock"
+                      type="number"
+                      value={formData.stock_count}
+                      onChange={(e) => setFormData({ ...formData, stock_count: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    value={formData.category_id}
+                    onValueChange={(value) => setFormData({ ...formData, category_id: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="image">Image URL</Label>
+                  <Input
+                    id="image"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  {editingProduct ? 'Update Product' : 'Add Product'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <Package className="h-24 w-24 mx-auto mb-4 text-muted-foreground" />
+              <h2 className="font-display text-2xl font-bold mb-2">No Products Yet</h2>
+              <p className="text-muted-foreground">Start by adding your first product</p>
+            </div>
+          ) : (
+            products.map((product) => (
+              <Card key={product.id}>
+                <CardContent className="p-6">
+                  <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden">
+                    {product.images[0] && (
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <h3 className="font-display text-xl font-bold mb-2">{product.name}</h3>
+                  <p className="text-muted-foreground mb-4 line-clamp-2">
+                    {product.description}
+                  </p>
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="font-display text-2xl font-bold text-primary">
+                      ${product.price}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      Stock: {product.stock_count}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => handleEdit(product)}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+};
+
+export default SupplierDashboard;

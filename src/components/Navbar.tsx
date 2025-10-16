@@ -7,7 +7,7 @@ import { useCart } from "@/hooks/useCart";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isSupplier } = useAuth();
   const { cartCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -49,6 +49,11 @@ const Navbar = () => {
             </Button>
             {user ? (
               <>
+                {isSupplier && (
+                  <Button variant="ghost" onClick={() => navigate('/supplier')} className="hidden md:flex">
+                    Dashboard
+                  </Button>
+                )}
                 <Button variant="ghost" size="icon" onClick={signOut} title="Sign Out">
                   <LogOut className="h-5 w-5" />
                 </Button>
