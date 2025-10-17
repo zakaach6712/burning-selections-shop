@@ -73,6 +73,32 @@ const Checkout = () => {
 
       if (itemsError) throw itemsError;
 
+      // Send order notification email
+      try {
+        const { error: notificationError } = await supabase.functions.invoke('send-order-notification', {
+          body: {
+            orderId: order.id,
+            customerName: formData.email.split('@')[0], // Use email prefix as name fallback
+            customerEmail: formData.email,
+            customerPhone: formData.phone,
+            items: orderItems,
+            totalAmount: cartTotal,
+            shippingAddress: formData.address,
+            shippingCity: formData.city,
+            shippingCountry: formData.country,
+            paymentMethod: formData.payment_method,
+          },
+        });
+
+        if (notificationError) {
+          console.error('Notification error:', notificationError);
+          // Don't fail the order if notification fails
+        }
+      } catch (notifError) {
+        console.error('Failed to send notification:', notifError);
+        // Don't fail the order if notification fails
+      }
+
       // Clear cart
       await clearCart();
 
