@@ -1,7 +1,7 @@
 import { ShoppingBag, Search, Menu, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 
@@ -12,11 +12,11 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const categories = [
-    "Women's Modest",
-    "Men's Streetwear",
-    "Sneakers",
-    "Moroccan Traditional",
-    "Boys Swag"
+    { name: "Women's Modest", path: "/shop?category=Modest Wear" },
+    { name: "Men's Streetwear", path: "/shop?category=Streetwear" },
+    { name: "Sneakers", path: "/shop?category=Footwear" },
+    { name: "Moroccan Traditional", path: "/shop?category=Traditional" },
+    { name: "Boys Swag", path: "/shop?category=Boys" }
   ];
 
   return (
@@ -24,27 +24,33 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <Link to="/" className="flex-shrink-0">
             <h1 className="font-display text-2xl font-black text-primary">
               Burnings <span className="text-secondary">Selections</span>
             </h1>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {categories.map((category) => (
-              <button
-                key={category}
+              <Link
+                key={category.name}
+                to={category.path}
                 className="text-sm font-medium text-foreground hover:text-primary transition-smooth"
               >
-                {category}
-              </button>
+                {category.name}
+              </Link>
             ))}
           </div>
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hidden md:flex"
+              onClick={() => navigate('/search')}
+            >
               <Search className="h-5 w-5" />
             </Button>
             {user ? (
@@ -90,13 +96,23 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border">
+            <Link
+              to="/search"
+              className="block w-full text-left py-2 px-4 text-sm font-medium text-foreground hover:bg-muted rounded-md transition-smooth"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Search className="inline h-4 w-4 mr-2" />
+              Search
+            </Link>
             {categories.map((category) => (
-              <button
-                key={category}
+              <Link
+                key={category.name}
+                to={category.path}
                 className="block w-full text-left py-2 px-4 text-sm font-medium text-foreground hover:bg-muted rounded-md transition-smooth"
+                onClick={() => setMobileMenuOpen(false)}
               >
-                {category}
-              </button>
+                {category.name}
+              </Link>
             ))}
           </div>
         )}

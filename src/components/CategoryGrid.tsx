@@ -1,45 +1,54 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   {
     title: "Modest Women's Wear",
     description: "Elegant abayas, hijabs & dresses",
     icon: "👗",
-    gradient: "from-primary/20 to-secondary/20"
+    gradient: "from-primary/20 to-secondary/20",
+    category: "Modest Wear"
   },
   {
     title: "Streetwear",
     description: "Hoodies, joggers & graphic tees",
     icon: "🔥",
-    gradient: "from-secondary/20 to-accent/20"
+    gradient: "from-secondary/20 to-accent/20",
+    category: "Streetwear"
   },
   {
     title: "Sneakers & Shoes",
     description: "Premium footwear collection",
     icon: "👟",
-    gradient: "from-accent/20 to-primary/20"
+    gradient: "from-accent/20 to-primary/20",
+    category: "Footwear"
   },
   {
     title: "Moroccan Traditional",
     description: "Authentic thobes & cultural wear",
     icon: "🕌",
-    gradient: "from-primary/20 to-accent/20"
+    gradient: "from-primary/20 to-accent/20",
+    category: "Traditional"
   },
   {
     title: "Boys Swag",
     description: "Cool casual outfits & accessories",
     icon: "🧢",
-    gradient: "from-secondary/20 to-primary/20"
+    gradient: "from-secondary/20 to-primary/20",
+    category: "Boys"
   },
   {
     title: "Accessories",
     description: "Complete your look",
     icon: "✨",
-    gradient: "from-accent/20 to-secondary/20"
+    gradient: "from-accent/20 to-secondary/20",
+    category: "Accessories"
   }
 ];
 
 const CategoryGrid = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-20 px-4">
       <div className="container mx-auto">
@@ -57,6 +66,7 @@ const CategoryGrid = () => {
             <Card
               key={category.title}
               className="group cursor-pointer overflow-hidden border-2 hover:border-primary transition-smooth shadow-card hover:shadow-elegant"
+              onClick={() => navigate(`/shop?category=${category.category}`)}
             >
               <CardContent className="p-8">
                 <div className={`bg-gradient-to-br ${category.gradient} rounded-2xl w-16 h-16 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-smooth`}>
