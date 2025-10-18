@@ -40,11 +40,6 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
         ) : (
           <Package className="h-24 w-24 text-muted-foreground/30" />
         )}
-        {!category && (
-          <span className="absolute top-4 left-4 bg-muted/90 text-muted-foreground px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">
-            Uncategorized
-          </span>
-        )}
         {isNew && (
           <span className="absolute top-4 left-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
             New
