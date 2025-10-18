@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart } from "lucide-react";
+import { ShoppingCart, Heart, Package } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -30,12 +30,16 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
   };
   return (
     <Card className="group overflow-hidden border-2 hover:border-primary transition-smooth shadow-card hover:shadow-elegant">
-      <div className="relative overflow-hidden bg-muted">
-        <img
-          src={image}
-          alt={name}
-          className="w-full h-80 object-cover group-hover:scale-105 transition-smooth"
-        />
+      <div className="relative overflow-hidden bg-muted flex items-center justify-center min-h-[320px]">
+        {image ? (
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-80 object-cover group-hover:scale-105 transition-smooth"
+          />
+        ) : (
+          <Package className="h-24 w-24 text-muted-foreground/30" />
+        )}
         {isNew && (
           <span className="absolute top-4 left-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
             New

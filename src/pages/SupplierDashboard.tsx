@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Package, Edit, Trash2 } from 'lucide-react';
+import { Plus, Package, Edit, Trash2, Upload, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -46,6 +46,9 @@ const SupplierDashboard = () => {
     category_id: '',
     image_url: '',
   });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!user || !isSupplier)) {
@@ -95,17 +98,99 @@ const SupplierDashboard = () => {
     }
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      toast({
+        title: 'Invalid file type',
+        description: 'Please select a JPG, PNG, or WEBP image',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'File too large',
+        description: 'Image must be less than 5MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setSelectedImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    setFormData({ ...formData, image_url: '' });
+  };
+
+  const uploadImage = async (): Promise<string | null> => {
+    if (!selectedImage || !user) return formData.image_url || null;
+
+    setUploading(true);
+    try {
+      const fileExt = selectedImage.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, selectedImage, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error: any) {
+      toast({
+        title: 'Upload failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      setUploading(true);
+      
+      // Upload new image if selected
+      let imageUrl = formData.image_url;
+      if (selectedImage) {
+        const uploadedUrl = await uploadImage();
+        if (!uploadedUrl) {
+          setUploading(false);
+          return;
+        }
+        imageUrl = uploadedUrl;
+      }
+
       const productData = {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
         stock_count: parseInt(formData.stock_count),
         category_id: formData.category_id || null,
-        images: formData.image_url ? [formData.image_url] : [],
+        images: imageUrl ? [imageUrl] : [],
         supplier_id: user?.id,
         slug: formData.name.toLowerCase().replace(/\s+/g, '-'),
         is_active: true,
@@ -144,6 +229,8 @@ const SupplierDashboard = () => {
         category_id: '',
         image_url: '',
       });
+      setSelectedImage(null);
+      setImagePreview(null);
       setEditingProduct(null);
       setShowForm(false);
       fetchProducts();
@@ -153,6 +240,8 @@ const SupplierDashboard = () => {
         description: error.message,
         variant: 'destructive',
       });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -166,6 +255,8 @@ const SupplierDashboard = () => {
       category_id: product.category_id || '',
       image_url: product.images[0] || '',
     });
+    setSelectedImage(null);
+    setImagePreview(product.images[0] || null);
     setShowForm(true);
   };
 
@@ -285,16 +376,50 @@ const SupplierDashboard = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="image">Image URL</Label>
-                  <Input
-                    id="image"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <Label htmlFor="image">Product Image</Label>
+                  <div className="mt-2">
+                    {imagePreview ? (
+                      <div className="relative">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full h-48 object-cover rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2"
+                          onClick={removeImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <label
+                        htmlFor="image-upload"
+                        className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-muted-foreground/25 rounded-lg cursor-pointer hover:border-primary/50 transition-colors"
+                      >
+                        <Upload className="h-12 w-12 mb-2 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          Click to upload image
+                        </span>
+                        <span className="text-xs text-muted-foreground mt-1">
+                          JPG, PNG or WEBP (max 5MB)
+                        </span>
+                        <input
+                          id="image-upload"
+                          type="file"
+                          className="hidden"
+                          accept="image/jpeg,image/jpg,image/png,image/webp"
+                          onChange={handleImageSelect}
+                        />
+                      </label>
+                    )}
+                  </div>
                 </div>
-                <Button type="submit" className="w-full">
-                  {editingProduct ? 'Update Product' : 'Add Product'}
+                <Button type="submit" className="w-full" disabled={uploading}>
+                  {uploading ? 'Uploading...' : editingProduct ? 'Update Product' : 'Add Product'}
                 </Button>
               </form>
             </CardContent>
@@ -312,13 +437,15 @@ const SupplierDashboard = () => {
             products.map((product) => (
               <Card key={product.id}>
                 <CardContent className="p-6">
-                  <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden">
-                    {product.images[0] && (
+                  <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden flex items-center justify-center">
+                    {product.images[0] ? (
                       <img
                         src={product.images[0]}
                         alt={product.name}
                         className="w-full h-full object-cover"
                       />
+                    ) : (
+                      <Package className="h-16 w-16 text-muted-foreground/30" />
                     )}
                   </div>
                   <h3 className="font-display text-xl font-bold mb-2">{product.name}</h3>
