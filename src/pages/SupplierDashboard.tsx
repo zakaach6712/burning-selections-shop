@@ -69,6 +69,7 @@ const SupplierDashboard = () => {
         .from('products')
         .select('*')
         .eq('supplier_id', user?.id)
+        .eq('is_active', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -264,9 +265,11 @@ const SupplierDashboard = () => {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
+      // Soft delete: set is_active to false instead of deleting
+      // This preserves order history and prevents foreign key constraint violations
       const { error } = await supabase
         .from('products')
-        .delete()
+        .update({ is_active: false })
         .eq('id', productId);
 
       if (error) throw error;
