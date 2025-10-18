@@ -10,7 +10,7 @@ interface ProductCardProps {
   image: string;
   name: string;
   price: number;
-  category: string;
+  category?: string;
   isNew?: boolean;
 }
 
@@ -40,6 +40,11 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
         ) : (
           <Package className="h-24 w-24 text-muted-foreground/30" />
         )}
+        {!category && (
+          <span className="absolute top-4 left-4 bg-muted/90 text-muted-foreground px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">
+            Uncategorized
+          </span>
+        )}
         {isNew && (
           <span className="absolute top-4 left-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
             New
@@ -54,11 +59,13 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
         </Button>
       </div>
       <CardContent className="p-6">
-        <div className="mb-2">
-          <span className="text-sm text-muted-foreground uppercase tracking-wide">
-            {category}
-          </span>
-        </div>
+        {category && (
+          <div className="mb-2">
+            <span className="text-sm text-muted-foreground uppercase tracking-wide">
+              {category}
+            </span>
+          </div>
+        )}
         <h3 className="font-display text-xl font-bold mb-2 group-hover:text-primary transition-smooth">
           {name}
         </h3>

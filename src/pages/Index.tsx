@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import CategoryGrid from "@/components/CategoryGrid";
+import CategoryCarousel from "@/components/CategoryCarousel";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import ShopByCulture from "@/components/ShopByCulture";
 import FeaturedLooks from "@/components/FeaturedLooks";
@@ -11,7 +11,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <CategoryGrid />
+      <CategoryCarousel />
       <FeaturedProducts />
       <ShopByCulture />
       <FeaturedLooks />
