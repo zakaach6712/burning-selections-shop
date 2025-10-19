@@ -30,12 +30,12 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
   };
   return (
     <Card className="group overflow-hidden border-2 hover:border-primary transition-smooth shadow-card hover:shadow-elegant">
-      <div className="relative overflow-hidden bg-muted flex items-center justify-center min-h-[320px]">
+      <div className="relative overflow-hidden bg-muted flex items-center justify-center aspect-square">
         {image ? (
           <img
             src={image}
             alt={name}
-            className="w-full h-80 object-cover group-hover:scale-105 transition-smooth"
+            className="w-full h-full object-cover group-hover:scale-105 transition-smooth"
           />
         ) : (
           <Package className="h-24 w-24 text-muted-foreground/30" />

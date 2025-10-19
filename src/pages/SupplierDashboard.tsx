@@ -99,33 +99,99 @@ const SupplierDashboard = () => {
     }
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const resizeImage = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Set max dimensions while maintaining aspect ratio
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const resizedFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now(),
+                });
+                resolve(resizedFile);
+              } else {
+                reject(new Error('Failed to resize image'));
+              }
+            },
+            'image/jpeg',
+            0.85 // Quality - 85% is good balance between quality and file size
+          );
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     // Validate file type
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic'];
     if (!validTypes.includes(file.type)) {
       toast({
         title: 'Invalid file type',
-        description: 'Please select a JPG, PNG, or WEBP image',
+        description: 'Please select an image file (JPG, PNG, WEBP)',
         variant: 'destructive',
       });
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    try {
+      // Show loading state
       toast({
-        title: 'File too large',
-        description: 'Image must be less than 5MB',
+        title: 'Processing image...',
+        description: 'Resizing and optimizing your image',
+      });
+
+      // Resize image automatically
+      const resizedFile = await resizeImage(file);
+      setSelectedImage(resizedFile);
+      setImagePreview(URL.createObjectURL(resizedFile));
+      
+      toast({
+        title: 'Image ready',
+        description: 'Your image has been optimized and is ready to upload',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to process image. Please try another file.',
         variant: 'destructive',
       });
-      return;
     }
-
-    setSelectedImage(file);
-    setImagePreview(URL.createObjectURL(file));
   };
 
   const removeImage = () => {
@@ -408,7 +474,7 @@ const SupplierDashboard = () => {
                           Click to upload image
                         </span>
                         <span className="text-xs text-muted-foreground mt-1">
-                          JPG, PNG or WEBP (max 5MB)
+                          JPG, PNG or WEBP (auto-optimized)
                         </span>
                         <input
                           id="image-upload"
@@ -441,15 +507,19 @@ const SupplierDashboard = () => {
               <Card key={product.id}>
                 <CardContent className="p-6">
                   <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden flex items-center justify-center">
-                    {product.images[0] ? (
+                    {product.images && product.images[0] ? (
                       <img
                         src={product.images[0]}
                         alt={product.name}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement?.querySelector('.package-icon')?.classList.remove('hidden');
+                        }}
                       />
-                    ) : (
-                      <Package className="h-16 w-16 text-muted-foreground/30" />
-                    )}
+                    ) : null}
+                    <Package className={`package-icon h-16 w-16 text-muted-foreground/30 ${product.images && product.images[0] ? 'hidden' : ''}`} />
                   </div>
                   <h3 className="font-display text-xl font-bold mb-2">{product.name}</h3>
                   <p className="text-muted-foreground mb-4 line-clamp-2">
