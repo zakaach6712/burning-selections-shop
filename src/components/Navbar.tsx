@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <Button 
               variant="ghost" 
               size="icon" 
