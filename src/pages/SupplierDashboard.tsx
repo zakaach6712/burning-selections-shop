@@ -100,36 +100,31 @@ const SupplierDashboard = () => {
   };
 
   const resizeImage = (file: File): Promise<File> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
-          // Set max dimensions while maintaining aspect ratio
-          const MAX_WIDTH = 1200;
-          const MAX_HEIGHT = 1200;
           let width = img.width;
           let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
+          
+          // Resize to max 1200px on longest side while maintaining aspect ratio
+          const maxSize = 1200;
+          if (width > height && width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          } else if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
           }
-
+          
           canvas.width = width;
           canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
-
+          
           canvas.toBlob(
             (blob) => {
               if (blob) {
@@ -139,17 +134,15 @@ const SupplierDashboard = () => {
                 });
                 resolve(resizedFile);
               } else {
-                reject(new Error('Failed to resize image'));
+                resolve(file);
               }
             },
             'image/jpeg',
-            0.85 // Quality - 85% is good balance between quality and file size
+            0.9
           );
         };
-        img.onerror = () => reject(new Error('Failed to load image'));
         img.src = e.target?.result as string;
       };
-      reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsDataURL(file);
     });
   };
@@ -163,34 +156,26 @@ const SupplierDashboard = () => {
     if (!validTypes.includes(file.type)) {
       toast({
         title: 'Invalid file type',
-        description: 'Please select an image file (JPG, PNG, WEBP)',
+        description: 'Please select an image file',
         variant: 'destructive',
       });
       return;
     }
 
     try {
-      // Show loading state
-      toast({
-        title: 'Processing image...',
-        description: 'Resizing and optimizing your image',
-      });
-
-      // Resize image automatically
-      const resizedFile = await resizeImage(file);
-      setSelectedImage(resizedFile);
-      setImagePreview(URL.createObjectURL(resizedFile));
+      // Automatically resize image
+      const resizedImage = await resizeImage(file);
+      setSelectedImage(resizedImage);
+      setImagePreview(URL.createObjectURL(resizedImage));
       
       toast({
         title: 'Image ready',
-        description: 'Your image has been optimized and is ready to upload',
+        description: 'Image automatically optimized',
       });
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to process image. Please try another file.',
-        variant: 'destructive',
-      });
+      // If resize fails, use original
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -474,13 +459,13 @@ const SupplierDashboard = () => {
                           Click to upload image
                         </span>
                         <span className="text-xs text-muted-foreground mt-1">
-                          JPG, PNG or WEBP (auto-optimized)
+                          Any size - automatically optimized
                         </span>
                         <input
                           id="image-upload"
                           type="file"
                           className="hidden"
-                          accept="image/jpeg,image/jpg,image/png,image/webp"
+                          accept="image/*"
                           onChange={handleImageSelect}
                         />
                       </label>
@@ -506,20 +491,19 @@ const SupplierDashboard = () => {
             products.map((product) => (
               <Card key={product.id}>
                 <CardContent className="p-6">
-                  <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden flex items-center justify-center">
-                    {product.images && product.images[0] ? (
+                  <div className="aspect-square bg-muted rounded-lg mb-4 overflow-hidden">
+                    {product.images[0] ? (
                       <img
                         src={product.images[0]}
                         alt={product.name}
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          target.parentElement?.querySelector('.package-icon')?.classList.remove('hidden');
-                        }}
+                        loading="lazy"
                       />
-                    ) : null}
-                    <Package className={`package-icon h-16 w-16 text-muted-foreground/30 ${product.images && product.images[0] ? 'hidden' : ''}`} />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="h-16 w-16 text-muted-foreground/30" />
+                      </div>
+                    )}
                   </div>
                   <h3 className="font-display text-xl font-bold mb-2">{product.name}</h3>
                   <p className="text-muted-foreground mb-4 line-clamp-2">
