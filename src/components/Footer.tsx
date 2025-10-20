@@ -21,7 +21,13 @@ const Footer = () => {
               discover premium styles that honor tradition and embrace modernity.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-smooth">
+              <a 
+                href="https://www.instagram.com/zakariya_abdulrazak_yussuf" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-smooth"
+                aria-label="Visit our Instagram"
+              >
                 <Instagram className="h-6 w-6" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-smooth">
