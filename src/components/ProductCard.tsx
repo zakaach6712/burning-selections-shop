@@ -60,7 +60,7 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
       <CardContent className="p-6">
         <div className="mb-2">
           <span className="text-sm text-muted-foreground uppercase tracking-wide">
-            {category || 'General'}
+            {category || 'Sneakers'}
           </span>
         </div>
         <h3 className="font-display text-xl font-bold mb-2 group-hover:text-primary transition-smooth">
