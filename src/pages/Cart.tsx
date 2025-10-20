@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 const Cart = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { cartItems, loading, updateQuantity, removeFromCart, cartTotal, cartCount } = useCart();
+  const { cartItems, loading, updateQuantity, removeFromCart, clearCart, cartTotal, cartCount } = useCart();
 
   if (!user) {
     return (
@@ -58,7 +58,19 @@ const Cart = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-12">
-        <h1 className="font-display text-4xl font-bold mb-8">Shopping Cart ({cartCount} items)</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="font-display text-4xl font-bold">Shopping Cart ({cartCount} items)</h1>
+          <Button 
+            variant="destructive" 
+            onClick={() => {
+              if (confirm('Are you sure you want to clear your entire cart?')) {
+                clearCart();
+              }
+            }}
+          >
+            Clear Cart
+          </Button>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
