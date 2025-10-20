@@ -4,9 +4,11 @@ import abayaImage from "@/assets/product-abaya.jpg";
 import sneakersImage from "@/assets/product-sneakers.jpg";
 import thobeImage from "@/assets/product-thobe.jpg";
 
-// These are display-only products with placeholder IDs
+// These are display-only products - they won't have functional cart features
+// Users should add actual products via SupplierDashboard for full cart functionality
 const products = [
   {
+    id: "featured-1",
     image: hoodieImage,
     name: "Urban Legend Hoodie",
     price: 89,
@@ -14,6 +16,7 @@ const products = [
     isNew: true
   },
   {
+    id: "featured-2",
     image: abayaImage,
     name: "Elegance Abaya",
     price: 129,
@@ -21,6 +24,7 @@ const products = [
     isNew: true
   },
   {
+    id: "featured-3",
     image: sneakersImage,
     name: "Gold Rush Sneakers",
     price: 149,
@@ -28,6 +32,7 @@ const products = [
     isNew: false
   },
   {
+    id: "featured-4",
     image: thobeImage,
     name: "Heritage Thobe",
     price: 159,
