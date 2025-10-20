@@ -8,14 +8,6 @@ import thobeImage from "@/assets/product-thobe.jpg";
 // Users should add actual products via SupplierDashboard for full cart functionality
 const products = [
   {
-    id: "featured-1",
-    image: hoodieImage,
-    name: "Urban Legend Hoodie",
-    price: 89,
-    category: "Streetwear",
-    isNew: true
-  },
-  {
     id: "featured-2",
     image: abayaImage,
     name: "Elegance Abaya",
