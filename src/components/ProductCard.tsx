@@ -68,7 +68,7 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
         </h3>
         <div className="flex items-center justify-between">
           <span className="font-display text-2xl font-bold text-primary">
-            ${price}
+            KSh {price.toLocaleString()}
           </span>
           <Button size="sm" className="shadow-md" onClick={handleAddToCart}>
             <ShoppingCart className="h-4 w-4 mr-2" />

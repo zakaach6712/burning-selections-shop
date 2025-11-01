@@ -11,7 +11,7 @@ const products = [
     id: "featured-2",
     image: abayaImage,
     name: "Elegance Abaya",
-    price: 129,
+    price: 3500,
     category: "Modest Wear",
     isNew: true
   },
@@ -19,7 +19,7 @@ const products = [
     id: "featured-3",
     image: sneakersImage,
     name: "Gold Rush Sneakers",
-    price: 149,
+    price: 4500,
     category: "Footwear",
     isNew: false
   },
@@ -27,7 +27,7 @@ const products = [
     id: "featured-4",
     image: thobeImage,
     name: "Heritage Thobe",
-    price: 159,
+    price: 2800,
     category: "Traditional",
     isNew: false
   }
