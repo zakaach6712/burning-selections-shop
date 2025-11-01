@@ -1,10 +1,21 @@
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  
   const links = {
     shop: ["Women's Modest", "Men's Streetwear", "Sneakers", "Traditional", "Accessories"],
     company: ["About Us", "Contact", "Careers", "Press"],
     support: ["FAQ", "Shipping", "Returns", "Size Guide"],
+  };
+
+  const handleLinkClick = (link: string) => {
+    if (link === "About Us") {
+      navigate("/about");
+    } else if (link === "Contact") {
+      window.location.href = "tel:0758630933";
+    }
   };
 
   return (
@@ -22,7 +33,7 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               <a 
-                href="https://www.instagram.com/zakariya_abdulrazak_yussuf" 
+                href="https://www.instagram.com/zakariya_abdulrazaq_yussuf" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-smooth"
@@ -61,7 +72,16 @@ const Footer = () => {
             <ul className="space-y-2">
               {links.company.map((link) => (
                 <li key={link}>
-                  <a href="#" className="text-muted-foreground hover:text-primary transition-smooth">
+                  <a 
+                    href={link === "Contact" ? "tel:0758630933" : "#"} 
+                    onClick={(e) => {
+                      if (link === "About Us") {
+                        e.preventDefault();
+                        handleLinkClick(link);
+                      }
+                    }}
+                    className="text-muted-foreground hover:text-primary transition-smooth cursor-pointer"
+                  >
                     {link}
                   </a>
                 </li>
