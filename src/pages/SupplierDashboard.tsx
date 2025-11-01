@@ -310,6 +310,11 @@ const SupplierDashboard = () => {
     setSelectedImage(null);
     setImagePreview(product.images[0] || null);
     setShowForm(true);
+    
+    // Scroll to form smoothly
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const handleDelete = async (productId: string) => {
