@@ -1,28 +1,34 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const looks = [
   {
     title: "Modest Luxe",
     description: "Elegant abayas paired with premium accessories for timeless sophistication",
     items: ["Black Embroidered Abaya", "Silk Hijab", "Gold Jewelry Set"],
-    gradient: "from-primary/30 to-secondary/20"
+    gradient: "from-primary/30 to-secondary/20",
+    category: "Modest Wear"
   },
   {
     title: "Urban Flow",
     description: "Complete streetwear ensemble for the modern trendsetter",
     items: ["Oversized Hoodie", "Tapered Joggers", "Premium Sneakers"],
-    gradient: "from-secondary/30 to-accent/20"
+    gradient: "from-secondary/30 to-accent/20",
+    category: "Streetwear"
   },
   {
     title: "Cultural Pride",
     description: "Traditional Moroccan elegance meets contemporary comfort",
     items: ["Heritage Thobe", "Embroidered Cap", "Leather Slippers"],
-    gradient: "from-accent/30 to-primary/20"
+    gradient: "from-accent/30 to-primary/20",
+    category: "Traditional"
   }
 ];
 
 const FeaturedLooks = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="py-20 px-4 bg-muted/30">
       <div className="container mx-auto">
@@ -59,7 +65,12 @@ const FeaturedLooks = () => {
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full shadow-md">Shop This Look</Button>
+                <Button 
+                  className="w-full shadow-md"
+                  onClick={() => navigate(`/shop?category=${encodeURIComponent(look.category)}`)}
+                >
+                  Shop This Look
+                </Button>
               </CardContent>
             </Card>
           ))}
