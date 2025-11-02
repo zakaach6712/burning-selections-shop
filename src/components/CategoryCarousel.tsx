@@ -49,6 +49,7 @@ const CategoryCarousel = () => {
       const { data, error } = await supabase
         .from('categories')
         .select('id, name, slug, description')
+        .eq('slug', 'footwear')
         .order('name');
 
       if (error) throw error;
@@ -75,10 +76,10 @@ const CategoryCarousel = () => {
       <div className="container mx-auto">
         <div className="text-center mb-12 animate-fade-in">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            Shop by Category
+            Premium Footwear Collection
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Explore our curated collections celebrating diverse fashion cultures
+            Step into style with our exclusive selection of sneakers and premium shoes
           </p>
         </div>
 
