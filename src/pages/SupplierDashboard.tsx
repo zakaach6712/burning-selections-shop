@@ -361,22 +361,22 @@ const SupplierDashboard = () => {
       <Navbar />
       <div className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="font-display text-4xl font-bold">Supplier Dashboard</h1>
+          <h1 className="font-display text-4xl font-bold">Restaurant Admin Panel</h1>
           <Button onClick={() => setShowForm(!showForm)}>
             <Plus className="h-4 w-4 mr-2" />
-            {showForm ? 'Cancel' : 'Add Product'}
+            {showForm ? 'Cancel' : 'Add Menu Item'}
           </Button>
         </div>
 
         {showForm && (
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</CardTitle>
+              <CardTitle>{editingProduct ? 'Edit Menu Item' : 'Add New Menu Item'}</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Product Name *</Label>
+                  <Label htmlFor="name">Item Name *</Label>
                   <Input
                     id="name"
                     value={formData.name}
@@ -478,7 +478,7 @@ const SupplierDashboard = () => {
                   </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={uploading}>
-                  {uploading ? 'Uploading...' : editingProduct ? 'Update Product' : 'Add Product'}
+                  {uploading ? 'Uploading...' : editingProduct ? 'Update Menu Item' : 'Add Menu Item'}
                 </Button>
               </form>
             </CardContent>
@@ -489,8 +489,8 @@ const SupplierDashboard = () => {
           {products.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <Package className="h-24 w-24 mx-auto mb-4 text-muted-foreground" />
-              <h2 className="font-display text-2xl font-bold mb-2">No Products Yet</h2>
-              <p className="text-muted-foreground">Start by adding your first product</p>
+              <h2 className="font-display text-2xl font-bold mb-2">No Menu Items Yet</h2>
+              <p className="text-muted-foreground">Start by adding your first menu item</p>
             </div>
           ) : (
             products.map((product) => (

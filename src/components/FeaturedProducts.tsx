@@ -4,8 +4,7 @@ import abayaImage from "@/assets/product-abaya.jpg";
 import sneakersImage from "@/assets/product-sneakers.jpg";
 import thobeImage from "@/assets/product-thobe.jpg";
 
-// These are display-only products - they won't have functional cart features
-// Users should add actual products via SupplierDashboard for full cart functionality
+// Sample menu items - replace with actual items from database
 const products = [
   {
     id: "featured-2",
@@ -39,10 +38,10 @@ const FeaturedProducts = () => {
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            Featured Products
+            Featured Menu Items
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Handpicked styles that blend culture, comfort, and modern aesthetics
+            Handpicked dishes made with fresh, organic ingredients
           </p>
         </div>
 

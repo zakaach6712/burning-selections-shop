@@ -11,21 +11,17 @@ import {
 } from "@/components/ui/carousel";
 
 const categoryIcons: Record<string, string> = {
-  "womens-modest": "👗",
-  "mens-streetwear": "🔥",
-  "footwear": "👟",
-  "traditional": "🕌",
-  "boys-collection": "🧢",
-  "accessories": "✨"
+  "appetizers": "🥗",
+  "main-courses": "🍽️",
+  "desserts": "🍰",
+  "beverages": "🥤"
 };
 
 const categoryGradients: Record<string, string> = {
-  "womens-modest": "from-primary/20 to-secondary/20",
-  "mens-streetwear": "from-secondary/20 to-accent/20",
-  "footwear": "from-accent/20 to-primary/20",
-  "traditional": "from-primary/20 to-accent/20",
-  "boys-collection": "from-secondary/20 to-primary/20",
-  "accessories": "from-accent/20 to-secondary/20"
+  "appetizers": "from-primary/20 to-secondary/20",
+  "main-courses": "from-secondary/20 to-accent/20",
+  "desserts": "from-accent/20 to-primary/20",
+  "beverages": "from-primary/20 to-accent/20"
 };
 
 interface Category {
@@ -49,7 +45,6 @@ const CategoryCarousel = () => {
       const { data, error } = await supabase
         .from('categories')
         .select('id, name, slug, description')
-        .eq('slug', 'footwear')
         .order('name');
 
       if (error) throw error;
@@ -76,10 +71,10 @@ const CategoryCarousel = () => {
       <div className="container mx-auto">
         <div className="text-center mb-12 animate-fade-in">
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            Premium Footwear Collection
+            Browse Our Menu
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Step into style with our exclusive selection of sneakers and premium shoes
+            Explore our delicious selection of fresh, organic food
           </p>
         </div>
 

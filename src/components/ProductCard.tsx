@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Package } from "lucide-react";
+import { ShoppingCart, Heart, Package, Star } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -12,9 +12,10 @@ interface ProductCardProps {
   price: number;
   category?: string;
   isNew?: boolean;
+  rating?: number;
 }
 
-const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardProps) => {
+const ProductCard = ({ id, image, name, price, category, isNew, rating = 0 }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -58,10 +59,24 @@ const ProductCard = ({ id, image, name, price, category, isNew }: ProductCardPro
         </Button>
       </div>
       <CardContent className="p-6">
-        <div className="mb-2">
+        <div className="mb-2 flex items-center justify-between">
           <span className="text-sm text-muted-foreground uppercase tracking-wide">
-            {category || 'Sneakers'}
+            {category || 'Food'}
           </span>
+          {rating > 0 && (
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`h-4 w-4 ${
+                    i < rating
+                      ? "fill-accent text-accent"
+                      : "text-muted-foreground/30"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <h3 className="font-display text-xl font-bold mb-2 group-hover:text-primary transition-smooth">
           {name}

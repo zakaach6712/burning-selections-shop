@@ -60,12 +60,12 @@ const Shop = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="mb-8">
           <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            {category ? `${category} Collection` : "All Products"}
+            {category ? `${category}` : "Our Menu"}
           </h1>
           <p className="text-lg text-muted-foreground">
             {category
-              ? `Explore our curated ${category.toLowerCase()} collection`
-              : "Browse our complete collection of fashion and accessories"}
+              ? `Fresh ${category.toLowerCase()} prepared daily`
+              : "Browse our complete menu of delicious food"}
           </p>
         </div>
 
@@ -89,7 +89,7 @@ const Shop = () => {
         ) : (
           <div className="text-center py-20">
             <p className="text-xl text-muted-foreground">
-              No products found in this category yet.
+              No menu items found in this category yet.
             </p>
           </div>
         )}

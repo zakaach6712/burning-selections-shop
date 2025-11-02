@@ -13,11 +13,10 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const categories = [
-    { name: "Women's Modest", path: "/shop?category=Modest Wear" },
-    { name: "Men's Streetwear", path: "/shop?category=Streetwear" },
-    { name: "Sneakers", path: "/shop?category=Footwear" },
-    { name: "Moroccan Traditional", path: "/shop?category=Traditional" },
-    { name: "Boys Swag", path: "/shop?category=Boys" }
+    { name: "Appetizers", path: "/shop?category=Appetizers" },
+    { name: "Main Courses", path: "/shop?category=Main Courses" },
+    { name: "Desserts", path: "/shop?category=Desserts" },
+    { name: "Beverages", path: "/shop?category=Beverages" }
   ];
 
   return (
@@ -27,7 +26,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <h1 className="font-display text-2xl font-black text-primary">
-              Burnings <span className="text-secondary">Selections</span>
+              Fresh <span className="text-secondary">Flavors</span>
             </h1>
           </Link>
 
@@ -59,7 +58,7 @@ const Navbar = () => {
               <>
                 {isSupplier && (
                   <Button variant="ghost" onClick={() => navigate('/supplier')} className="hidden md:flex">
-                    Dashboard
+                    Admin Panel
                   </Button>
                 )}
                 <Button variant="ghost" size="icon" onClick={signOut} title="Sign Out">
