@@ -26,7 +26,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <h1 className="font-display text-2xl font-black text-primary">
-              Fresh <span className="text-secondary">Flavors</span>
+              Kashka <span className="text-secondary">Flavors</span>
             </h1>
           </Link>
 

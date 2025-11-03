@@ -1,34 +1,46 @@
 import ProductCard from "./ProductCard";
-import hoodieImage from "@/assets/product-hoodie.jpg";
-import abayaImage from "@/assets/product-abaya.jpg";
-import sneakersImage from "@/assets/product-sneakers.jpg";
-import thobeImage from "@/assets/product-thobe.jpg";
+import appetizer1 from "@/assets/food-appetizer-1.jpg";
+import appetizer2 from "@/assets/food-appetizer-2.jpg";
+import main1 from "@/assets/food-main-1.jpg";
+import main2 from "@/assets/food-main-2.jpg";
+import dessert1 from "@/assets/food-dessert-1.jpg";
+import dessert2 from "@/assets/food-dessert-2.jpg";
+import beverage1 from "@/assets/food-beverage-1.jpg";
+import beverage2 from "@/assets/food-beverage-2.jpg";
 
 // Sample menu items - replace with actual items from database
 const products = [
   {
+    id: "featured-1",
+    image: appetizer1,
+    name: "Mediterranean Platter",
+    price: 850,
+    category: "Appetizers",
+    rating: 4.8
+  },
+  {
     id: "featured-2",
-    image: abayaImage,
-    name: "Elegance Abaya",
-    price: 3500,
-    category: "Modest Wear",
-    isNew: true
+    image: main1,
+    name: "Grilled Steak",
+    price: 2200,
+    category: "Main Courses",
+    rating: 4.9
   },
   {
     id: "featured-3",
-    image: sneakersImage,
-    name: "Gold Rush Sneakers",
-    price: 4500,
-    category: "Footwear",
-    isNew: false
+    image: dessert1,
+    name: "Chocolate Lava Cake",
+    price: 650,
+    category: "Desserts",
+    rating: 4.7
   },
   {
     id: "featured-4",
-    image: thobeImage,
-    name: "Heritage Thobe",
-    price: 2800,
-    category: "Traditional",
-    isNew: false
+    image: beverage1,
+    name: "Fresh Mango Smoothie",
+    price: 450,
+    category: "Beverages",
+    rating: 4.6
   }
 ];
 

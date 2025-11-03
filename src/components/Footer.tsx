@@ -5,9 +5,9 @@ const Footer = () => {
   const navigate = useNavigate();
   
   const links = {
-    shop: ["Women's Modest", "Men's Streetwear", "Sneakers", "Traditional", "Accessories"],
+    shop: ["Appetizers", "Main Courses", "Desserts", "Beverages", "Specials"],
     company: ["About Us", "Contact", "Careers", "Press"],
-    support: ["FAQ", "Shipping", "Returns", "Size Guide"],
+    support: ["FAQ", "Delivery", "Reservations", "Catering"],
   };
 
   const handleLinkClick = (link: string) => {
@@ -25,11 +25,11 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <h2 className="font-display text-3xl font-black text-primary mb-4">
-              Burnings <span className="text-secondary">Selections</span>
+              Kashka <span className="text-secondary">Flavors</span>
             </h2>
             <p className="text-muted-foreground mb-6 max-w-sm">
-              Fashion that celebrates every culture. From modest elegance to bold streetwear,
-              discover premium styles that honor tradition and embrace modernity.
+              Fresh, organic food crafted with love. From appetizers to desserts,
+              discover delicious dishes made with the finest ingredients.
             </p>
             <div className="flex space-x-4">
               <a 
@@ -104,7 +104,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 Burnings Selections. All rights reserved.</p>
+          <p>&copy; 2025 Kashka Flavors. All rights reserved.</p>
         </div>
       </div>
     </footer>

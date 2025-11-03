@@ -22,11 +22,10 @@ const Hero = () => {
       <div className="relative container mx-auto px-4 h-full flex items-center">
         <div className="max-w-2xl">
           <h1 className="font-display text-5xl md:text-7xl font-black mb-6 leading-tight">
-            Fresh Food{" "}
+            Kashka Flavors{" "}
             <span className="gradient-hero bg-clip-text text-transparent">
-              Delivered
+              Fresh & Delicious
             </span>{" "}
-            Daily
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl">
             Experience authentic flavors and fresh ingredients. Order online for 
