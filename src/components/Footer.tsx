@@ -25,7 +25,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <h2 className="font-display text-3xl font-black text-primary mb-4">
-              Kashka <span className="text-secondary">Flavors</span>
+              Honey <span className="text-secondary">Flavors</span>
             </h2>
             <p className="text-muted-foreground mb-6 max-w-sm">
               Fresh, organic food crafted with love. From appetizers to desserts,
@@ -104,7 +104,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 Kashka Flavors. All rights reserved.</p>
+          <p>&copy; 2025 Honey Flavors. All rights reserved.</p>
         </div>
       </div>
     </footer>

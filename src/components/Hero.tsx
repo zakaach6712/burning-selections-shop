@@ -22,7 +22,7 @@ const Hero = () => {
       <div className="relative container mx-auto px-4 h-full flex items-center">
         <div className="max-w-2xl">
           <h1 className="font-display text-5xl md:text-7xl font-black mb-6 leading-tight">
-            Kashka Flavors{" "}
+            Honey Flavors{" "}
             <span className="gradient-hero bg-clip-text text-transparent">
               Fresh & Delicious
             </span>{" "}
