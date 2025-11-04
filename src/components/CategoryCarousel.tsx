@@ -9,19 +9,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import appetizerImage from "@/assets/category-appetizers.jpg";
+import mainCoursesImage from "@/assets/category-main-courses.jpg";
+import dessertsImage from "@/assets/category-desserts.jpg";
+import beveragesImage from "@/assets/category-beverages.jpg";
 
-const categoryIcons: Record<string, string> = {
-  "appetizers": "🥗",
-  "main-courses": "🍽️",
-  "desserts": "🍰",
-  "beverages": "🥤"
-};
-
-const categoryGradients: Record<string, string> = {
-  "appetizers": "from-primary/20 to-secondary/20",
-  "main-courses": "from-secondary/20 to-accent/20",
-  "desserts": "from-accent/20 to-primary/20",
-  "beverages": "from-primary/20 to-accent/20"
+const categoryImages: Record<string, string> = {
+  "appetizers": appetizerImage,
+  "main-courses": mainCoursesImage,
+  "desserts": dessertsImage,
+  "beverages": beveragesImage
 };
 
 interface Category {
@@ -93,8 +90,12 @@ const CategoryCarousel = () => {
                   onClick={() => navigate(`/shop?category=${category.name}`)}
                 >
                   <CardContent className="p-8">
-                    <div className={`bg-gradient-to-br ${categoryGradients[category.slug] || 'from-primary/20 to-secondary/20'} rounded-2xl w-16 h-16 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-smooth`}>
-                      {categoryIcons[category.slug] || "📦"}
+                    <div className="rounded-2xl w-24 h-24 mb-6 overflow-hidden group-hover:scale-110 transition-smooth shadow-lg">
+                      <img 
+                        src={categoryImages[category.slug]} 
+                        alt={category.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <h3 className="font-display text-2xl font-bold mb-2 group-hover:text-primary transition-smooth">
                       {category.name}
