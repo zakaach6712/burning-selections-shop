@@ -1,27 +1,29 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import familyFeastImage from "@/assets/combo-family-feast.jpg";
+import healthyChoiceImage from "@/assets/combo-healthy-choice.jpg";
+import sweetIndulgenceImage from "@/assets/combo-sweet-indulgence.jpg";
+
+const comboImages = [familyFeastImage, healthyChoiceImage, sweetIndulgenceImage];
 
 const combos = [
   {
     title: "Family Feast",
     description: "Perfect meal for the whole family with a variety of delicious dishes",
     items: ["Mixed Appetizers", "3 Main Courses", "Fresh Salad", "Dessert Platter"],
-    gradient: "from-primary/30 to-secondary/20",
     category: "Main Courses"
   },
   {
     title: "Healthy Choice",
     description: "Nutritious and delicious options for health-conscious diners",
     items: ["Garden Fresh Salad", "Grilled Protein", "Fruit Bowl", "Green Smoothie"],
-    gradient: "from-secondary/30 to-accent/20",
     category: "Appetizers"
   },
   {
     title: "Sweet Indulgence",
     description: "Satisfy your sweet tooth with our premium dessert selection",
     items: ["Chocolate Cake", "Fresh Fruit Tart", "Ice Cream", "Fresh Juice"],
-    gradient: "from-accent/30 to-primary/20",
     category: "Desserts"
   }
 ];
@@ -47,10 +49,13 @@ const FeaturedLooks = () => {
               key={index}
               className="group overflow-hidden border-2 hover:border-primary transition-smooth shadow-card hover:shadow-elegant"
             >
-              <div className={`h-64 bg-gradient-to-br ${combo.gradient} flex items-center justify-center`}>
-                <span className="text-8xl opacity-50">
-                  {index === 0 ? "🍱" : index === 1 ? "🥗" : "🍰"}
-                </span>
+              <div className="h-64 relative overflow-hidden">
+                <img 
+                  src={comboImages[index]} 
+                  alt={combo.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-smooth"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
               </div>
               <CardContent className="p-6">
                 <h3 className="font-display text-2xl font-bold mb-2 group-hover:text-primary transition-smooth">
