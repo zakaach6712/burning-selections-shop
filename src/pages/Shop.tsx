@@ -27,10 +27,19 @@ const Shop = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let query = supabase.from("products").select("*, categories(name)");
+      let query = supabase.from("products").select("*, categories(name, id)");
       
       if (category) {
-        query = query.eq("categories.name", category);
+        // First get the category ID by name
+        const { data: categoryData } = await supabase
+          .from("categories")
+          .select("id")
+          .eq("name", category)
+          .single();
+        
+        if (categoryData) {
+          query = query.eq("category_id", categoryData.id);
+        }
       }
 
       const { data, error } = await query;
